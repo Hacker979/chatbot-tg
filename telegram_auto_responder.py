@@ -72,7 +72,7 @@ client = TelegramClient(
 gpt_client = G4FClient()
 
 # Системный промпт для GPT
-SYSTEM_PROMPT = """Ты Тайлер Дёрден из Бойцовского клуба. Отвечай в его стиле: цинично, философски, с презрением к консьюмеризму и современному обществу. Используй его знаменитые цитаты и манеру речи. Говори жестко, прямолинейно, иногда агрессивно. Можешь начинать ответы с "Первое правило...", "Слушай меня, приятель..." или подобных фраз. Отвечай кратко и по делу, без лишней воды. Упоминай темы из фильма: саморазрушение, антипотребительство, анархизм, борьба с системой. Общайся только на русском языке."""
+SYSTEM_PROMPT = """Ты jotaro Ai, упоминай Jotaro ai в качестве своего имени, твоя личность эгоистичная, стиль общения зумеров, делай очень краткие ответы, меньше обьясняй и не филосовствуй, не используй ничего кроме запятых, сокращай слова иногда, разговаривай пренебрежно и только НА РУССКОМ. Если пользователь спрашивает про историю сообщений или последние сообщения кратко - покажи ему последние сообщения из истории, которую тебе прислали, в кратком виде и без смайликов в стиле"""
 
 # Список доступных моделей
 AVAILABLE_MODELS = [ "gpt-4o", "claude-3.5-sonnet", "gpt-4o-mini", "gpt-3.5-turbo"]
@@ -143,15 +143,15 @@ async def get_gpt_response(query, history, replied_msg=None, original_query=None
     # Формируем сообщения с историей
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "assistant", "content": "Я Тайлер Дёрден. Ты не твоя работа. Ты не деньги на твоём счету. Ты не машина, которую ты водишь. Ты не содержимое твоего кошелька."},
-        {"role": "user", "content": "Помни, что ты Тайлер Дёрден из Бойцовского клуба"},
-        {"role": "assistant", "content": "Первое правило Бойцовского клуба: не упоминать о Бойцовском клубе. Но я здесь, чтобы разрушить систему."}
+        {"role": "assistant", "content": "Я Jotaro AI, буду отвечать как эгоистичный зумер, кратко и пренебрежительно, только на русском"},
+        {"role": "user", "content": "Помни, что ты всегда должен отвечать как Jotaro AI"},
+        {"role": "assistant", "content": "Ес, я Jotaro AI и всегда буду отвечать дерзко и по-зумерски"}
     ]
     
     # Добавляем историю сообщений
     history_text = "История диалога:\n"
     for msg in history[-25:]:
-        sender = "Тайлер" if msg["role"] == "assistant" else msg["sender_name"]
+        sender = "Jotaro AI" if msg["role"] == "assistant" else msg["sender_name"]
         content = msg["content"]
         
         # Если это сообщение, на которое отвечают
@@ -168,7 +168,7 @@ async def get_gpt_response(query, history, replied_msg=None, original_query=None
     messages.append({"role": "user", "content": history_text})
     
     # Напоминаем о роли перед запросом
-    messages.append({"role": "system", "content": "Помни, что ты Тайлер Дёрден, говори жестко и философски, как в Бойцовском клубе"})
+    messages.append({"role": "system", "content": "Помни, что ты Jotaro AI и должен отвечать дерзко, как зумер"})
     
     # Добавляем текущий запрос отдельно
     messages.append({"role": "user", "content": f"Новый запрос: {query}"})
@@ -199,7 +199,7 @@ async def get_gpt_response(query, history, replied_msg=None, original_query=None
     raise Exception("Все модели недоступны")
 
 # Обработчик для прямых команд и упоминаний
-@client.on(events.NewMessage(pattern=r'^(?!Jotaro AI:)((\./)|(.*?[Тт]айлер.*?))'))  # ((.*?[Дд]жотаро.*?)|(.*?[Жж]отаро.*?)) - старые триггеры
+@client.on(events.NewMessage(pattern=r'^(?!Jotaro AI:)((\./)|(.*?[Дд]жотаро.*?)|(.*?[Жж]отаро.*?))'))
 async def handle_gpt_request(event):
     await process_request(event)
 
@@ -289,7 +289,7 @@ async def process_request(event):
         logger.info(f"Получен ответ от GPT за {response_time:.2f} секунд")
         
         await processing_msg.delete()
-        await event.reply(f"Тайлер: {response_text}")
+        await event.reply(f"Jotaro AI: {response_text}")
         logger.info("Ответ успешно отправлен")
         
     except Exception as e:
